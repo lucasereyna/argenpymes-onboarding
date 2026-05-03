@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Argenpymes – Alta de Clientes | Sucursal Córdoba</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap');
+:root{--bg:#F2EDE4;--card:#FDFAF5;--green:#1B3A2D;--gm:#2D6A45;--gp:#EBF2EE;--gold:#B8872A;--gl:#F9EDD6;--text:#1A1A17;--muted:#706B5E;--border:#D5CCBC;--red:#C0392B;--rl:#FCEBEB;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+.hdr{background:var(--green);color:#fff;padding:22px 36px 18px;display:flex;align-items:flex-end;justify-content:space-between;border-bottom:3px solid var(--gold);}
+.hdr h1{font-family:'DM Serif Display',serif;font-size:1.7rem;line-height:1;}
+.hdr h1 span{color:#A8CDB8;}
+.hdr p{font-size:11px;color:#92B0A0;margin-top:4px;letter-spacing:2px;text-transform:uppercase;}
+.badge{background:var(--gold);color:#fff;font-size:11px;font-weight:600;padding:5px 14px;border-radius:20px;letter-spacing:1.5px;text-transform:uppercase;white-space:nowrap;}
+.wrap{max-width:800px;margin:0 auto;padding:30px 20px 60px;}
+.pw{display:flex;margin-bottom:30px;}
+.ps{display:flex;flex-direction:column;align-items:center;flex:1;position:relative;}
+.ps:not(:last-child)::after{content:'';position:absolute;top:15px;left:50%;width:100%;height:1.5px;background:var(--border);z-index:0;}
+.ps.done:not(:last-child)::after{background:var(--gm);}
+.pc{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--border);background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;color:var(--muted);position:relative;z-index:1;transition:all .3s;}
+.ps.done .pc{background:var(--gm);border-color:var(--gm);color:#fff;}
+.ps.active .pc{background:var(--gold);border-color:var(--gold);color:#fff;}
+.pl{font-size:10px;color:var(--muted);margin-top:5px;text-align:center;letter-spacing:.5px;text-transform:uppercase;max-width:70px;line-height:1.3;}
+.ps.active .pl{color:var(--gold);font-weight:600;}
+.ps.done .pl{color:var(--gm);}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:26px;animation:fadeUp .3s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.ch{display:flex;align-items:flex-start;gap:14px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border);}
+.sn{width:36px;height:36px;min-width:36px;border-radius:9px;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:1.2rem;}
+.st h2{font-family:'DM Serif Display',serif;font-size:1.15rem;color:var(--green);}
+.st p{font-size:12px;color:var(--muted);margin-top:2px;}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.ff{grid-column:1/-1;}
+.fw label{display:block;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:5px;}
+.fw input{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:7px;background:#fff;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);outline:none;transition:border .2s;}
+.fw input:focus{border-color:var(--green);}
+.sb{display:flex;align-items:center;gap:8px;border-radius:8px;padding:10px 14px;font-size:12px;margin-top:12px;}
+.sb.idle{background:var(--gp);border:1px solid #B8D4BE;color:var(--gm);}
+.sb.wait{background:var(--gl);border:1px solid #DDB97A;color:#7A5A1A;}
+.sb.ready{background:var(--gp);border:1px solid #639922;color:var(--gm);}
+.sb.err{background:var(--rl);border:1px solid var(--red);color:var(--red);}
+.dl{display:flex;flex-direction:column;gap:7px;}
+.dr{display:flex;align-items:center;gap:10px;padding:11px 13px;border-radius:8px;border:1px solid var(--border);background:#F8F5EF;transition:all .2s;}
+.dr.ok{border-color:#639922;background:var(--gp);}
+.dr.ul{border-color:var(--gold);background:var(--gl);}
+.dr.er{border-color:var(--red);background:var(--rl);}
+.ds{width:24px;height:24px;min-width:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);background:#fff;}
+.ds.ok{background:var(--gm);border-color:var(--gm);color:#fff;}
+.ds.ul{background:var(--gl);border-color:var(--gold);}
+.di{flex:1;min-width:0;}
+.dn{font-size:13px;color:var(--text);line-height:1.4;}
+.dsu{font-size:11px;color:var(--muted);margin-top:1px;}
+.df{font-size:11px;color:var(--gm);margin-top:2px;font-weight:500;}
+.de{font-size:11px;color:var(--red);margin-top:2px;}
+.dlink{font-size:11px;color:var(--gold);text-decoration:none;display:block;margin-top:1px;}
+input[type="file"]{display:none;}
+.sg{margin-top:12px;border-left:2px solid #A8CCAF;padding-left:12px;}
+.sl{font-size:10px;font-weight:600;color:var(--gm);text-transform:uppercase;letter-spacing:1px;margin-bottom:7px;}
+.ib{background:var(--gl);border:1px solid #DDB97A;border-radius:8px;padding:11px 14px;font-size:12px;color:#7A5A1A;line-height:1.6;margin-top:12px;}
+.pbw{display:flex;align-items:center;gap:10px;margin-top:16px;padding-top:14px;border-top:1px solid var(--border);}
+.pbb{flex:1;height:4px;background:var(--border);border-radius:10px;overflow:hidden;}
+.pbf{height:100%;background:var(--gm);border-radius:10px;transition:width .4s;}
+.pbl{font-size:12px;color:var(--muted);white-space:nowrap;}
+.nb{display:flex;gap:8px;justify-content:flex-end;margin-top:18px;}
+button{padding:10px 22px;border-radius:7px;border:1.5px solid var(--border);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;background:#fff;color:var(--text);transition:all .2s;}
+button:hover{background:var(--gp);border-color:var(--gm);color:var(--green);}
+button.pri{background:var(--green);color:#fff;border-color:var(--green);}
+button.pri:hover{background:var(--gm);}
+button.gld{background:var(--gold);color:#fff;border-color:var(--gold);}
+button:disabled{opacity:.5;cursor:not-allowed;}
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;}
+.sbl{background:#F8F5EF;border:1px solid var(--border);border-radius:8px;padding:13px 15px;}
+.sbl h4{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:5px;}
+.ss{font-family:'DM Serif Display',serif;font-size:1.7rem;color:var(--green);line-height:1;}
+.ss span{font-size:13px;color:var(--muted);font-family:'DM Sans',sans-serif;}
+.ml{display:flex;flex-direction:column;gap:5px;margin-top:10px;}
+.mi{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--muted);background:#F8F5EF;padding:7px 12px;border-radius:7px;border:1px solid var(--border);}
+.md{width:6px;height:6px;min-width:6px;border-radius:50%;background:var(--red);margin-top:4px;}
+.cb{background:var(--green);color:#fff;border-radius:10px;padding:24px;text-align:center;}
+.cb h3{font-family:'DM Serif Display',serif;font-size:1.4rem;margin-bottom:6px;}
+.cb p{font-size:13px;color:#A8CDB8;line-height:1.6;}
+.cb a{color:#C0DD97;}
+.pill{display:inline-flex;background:var(--gp);color:var(--gm);font-size:10px;font-weight:600;padding:3px 10px;border-radius:20px;letter-spacing:1px;text-transform:uppercase;margin-bottom:14px;}
+.spin{width:12px;height:12px;border:2px solid rgba(0,0,0,.1);border-top-color:currentColor;border-radius:50%;animation:spin .7s linear infinite;display:inline-block;}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <div><h1>Argenpymes <span>·</span> Alta de Clientes</h1><p>Persona Jurídica — Proceso de Incorporación</p></div>
+  <div class="badge">Sucursal Córdoba</div>
+</div>
+<div class="wrap">
+  <div class="pw" id="pw"></div>
+  <div id="sc"></div>
+</div>
+<script>
+// ── SUPABASE CONFIG ───────────────────────────────────────────────────────
+const SB_URL    = "https://elbtaxrblelmrnvdcvte.supabase.co";
+const SB_KEY    = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsYnRheHJibGVscm1udmRjdnRlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1MjQ4MjMsImV4cCI6MjA5MzEwMDgyM30.fPgqizQfRwibNV7WDBoiJ3f_Ga64_CJ1NGU7BROftoo";
+const BUCKET    = "expedientes";
+
+// ── SUPABASE STORAGE UPLOAD ───────────────────────────────────────────────
+async function sbUpload(path, file) {
+  const url = `${SB_URL}/storage/v1/object/${BUCKET}/${path}`;
+  const r = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${SB_KEY}`,
+      "apikey": SB_KEY,
+      "Content-Type": file.type || "application/octet-stream",
+      "x-upsert": "true"
+    },
+    body: file
+  });
+  if (!r.ok) {
+    const err = await r.text();
+    throw new Error(`Upload error ${r.status}: ${err}`);
+  }
+  const publicUrl = `${SB_URL}/storage/v1/object/public/${BUCKET}/${path}`;
+  return { url: publicUrl };
+}
+
+// ── ESTADO ────────────────────────────────────────────────────────────────
+let step = 0;
+let folder = { name: null };   // solo nombre de carpeta para organizar archivos
+let uploads = {};              // docId -> { name, url, at }
+let docSt = {};                // docId -> 'idle'|'uploading'|'done'|'error'
+let clientData = {};
+
+const DOCS = [
+  {id:"anexo4",   name:"Anexo IV – Res. 212/2013",       sub:"Completo y firmado"},
+  {id:"mipyme",   name:"Certificado MiPyME vigente",      link:"http://certificadopyme.produccion.gob.ar/", linkLabel:"Descargar en produccion.gob.ar"},
+  {id:"estatuto", name:"Estatuto de la sociedad"},
+  {id:"acta",     name:"Acta de directorio con distribución de cargos", sub:"Última acta"},
+  {id:"ddjj_bp",  name:"DDJJ Bienes Personales de socios", sub:"Con presentación y apertura, firmada por CPN. Si el CPN difiere del balance, debe estar certificado por el Consejo Profesional."},
+  {id:"balances", name:"Últimos 2 estados contables",     sub:"Certificados por Consejo Profesional de Ciencias Económicas"},
+  {id:"dni",      name:"Copia DNI de todos los socios"},
+];
+const AGRO = [{id:"form_agro", name:"Formulario Agro", sub:"Actividad agropecuaria en general"}];
+const AGROGRP = [
+  {label:"Actividad agrícola",    items:[{id:"ip1",name:"IP1 de SISA"},{id:"ip2",name:"IP2 de SISA"}]},
+  {label:"Ganadería y porcinos",  items:[{id:"vacunacion",name:"Último formulario de vacunación"}]},
+  {label:"Tambo",                 items:[{id:"siglea",name:"Certificado SIGLEA",sub:"Últimos 24 meses"}]},
+];
+const STEPS = [
+  {id:1, label:"Datos",         title:"Identificación del cliente",  subtitle:"Completá los datos de la empresa"},
+  {id:2, label:"Documentación", title:"Documentación obligatoria",   subtitle:"Subí cada archivo — se guardan en la nube automáticamente"},
+  {id:3, label:"Agro",          title:"Documentación agropecuaria",  subtitle:"Solo si la empresa tiene actividad agropecuaria"},
+  {id:4, label:"Revisión",      title:"Revisión y confirmación",     subtitle:"Estado final del expediente"},
+];
+
+function allDocs(){ return [...DOCS,...AGRO,...AGROGRP.flatMap(g=>g.items)]; }
+function cnt(ids){ return ids.filter(id=>uploads[id]).length; }
+
+// ── RENDER PROGRESO ───────────────────────────────────────────────────────
+function rProg(){
+  document.getElementById('pw').innerHTML = STEPS.map((s,i)=>{
+    let c = i<step?'done':i===step?'active':'';
+    const ic = i<step
+      ? `<svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+      : s.id;
+    return `<div class="ps ${c}"><div class="pc">${ic}</div><div class="pl">${s.label}</div></div>`;
+  }).join('');
+}
+
+// ── HELPERS ───────────────────────────────────────────────────────────────
+function fld(label,type,ph,id){
+  return `<div class="fw"><label>${label}</label><input type="${type}" id="${id}" placeholder="${ph}" value="${clientData[id]||''}" oninput="clientData['${id}']=this.value"></div>`;
+}
+
+function drow(doc){
+  const up = uploads[doc.id], st = docSt[doc.id]||'idle';
+  const rc = up?'ok':st==='uploading'?'ul':st==='error'?'er':'';
+  const ic = up
+    ? `<div class="ds ok"><svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4L4 7.5L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>`
+    : st==='uploading'
+    ? `<div class="ds ul"><span class="spin" style="color:var(--gold)"></span></div>`
+    : `<div class="ds"></div>`;
+  let det = '';
+  if (up)              det = `<div class="df">📄 <a href="${up.url}" target="_blank" style="color:var(--gm);text-decoration:none;">${up.name}</a> · ${up.at}</div>`;
+  else if (st==='uploading') det = `<div class="dsu">Subiendo...</div>`;
+  else if (st==='error')     det = `<div class="de">Error al subir. Intentá de nuevo.</div>`;
+  const canUpload = !!folder.name && st!=='uploading';
+  return `<div class="dr ${rc}">${ic}
+    <div class="di">
+      <div class="dn">${doc.name}</div>
+      ${doc.sub?`<div class="dsu">${doc.sub}</div>`:''}
+      ${doc.link?`<a class="dlink" href="${doc.link}" target="_blank">↗ ${doc.linkLabel}</a>`:''}
+      ${det}
+    </div>
+    <div>
+      <input type="file" id="fi-${doc.id}" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" onchange="doUpload('${doc.id}',this)">
+      ${canUpload?`<button onclick="document.getElementById('fi-${doc.id}').click()" style="font-size:11px;padding:5px 12px;">${up?'Reemplazar':'↑ Subir'}</button>`:''}
+    </div>
+  </div>`;
+}
+
+function banner(){
+  if(!folder.name) return '';
+  return `<div class="sb ready" style="margin-bottom:12px;">☁️ Guardando en: <strong style="margin-left:4px;">${folder.name}</strong></div>`;
+}
+
+// ── RENDER PASOS ──────────────────────────────────────────────────────────
+function rStep(){
+  const s = STEPS[step];
+
+  if(s.id===1) return `
+    <div class="pill">Paso 1 de 4</div>
+    <div class="card">
+      <div class="ch"><div class="sn">1</div><div class="st"><h2>${s.title}</h2><p>${s.subtitle}</p></div></div>
+      <div class="fg">
+        ${fld("Razón social","text","Nombre de la empresa","razonsocial")}
+        ${fld("CUIT","text","XX-XXXXXXXX-X","cuit")}
+        ${fld("Actividad principal (AFIP)","text","Código y descripción","actividad")}
+        ${fld("Domicilio real","text","Calle y número","domicilio")}
+        ${fld("Localidad","text","Localidad","localidad")}
+        ${fld("Partido / Municipio","text","Partido","partido")}
+        ${fld("Teléfono","tel","(351) 000-0000","telefono")}
+        ${fld("Correo electrónico","email","empresa@mail.com","email_c")}
+        <div class="ff">${fld("Página web (opcional)","url","https://...","web")}</div>
+      </div>
+      <div class="sb idle" style="margin-top:14px;">☁️ Los archivos se guardarán en Supabase Storage organizados por cliente.</div>
+      <div class="nb"><button class="pri" onclick="handleS1()">Confirmar y continuar →</button></div>
+    </div>`;
+
+  const b = banner();
+
+  if(s.id===2){
+    const ids=DOCS.map(d=>d.id), done=cnt(ids), pct=Math.round(done/ids.length*100);
+    return `<div class="pill">Paso 2 de 4</div><div class="card">
+      <div class="ch"><div class="sn">2</div><div class="st"><h2>${s.title}</h2><p>${s.subtitle}</p></div></div>
+      ${b}<div class="dl">${DOCS.map(drow).join('')}</div>
+      <div class="pbw"><div class="pbb"><div class="pbf" style="width:${pct}%"></div></div><div class="pbl">${done} / ${ids.length}</div></div>
+      <div class="nb"><button onclick="prevStep()">← Volver</button><button class="pri" onclick="nextStep()">Siguiente →</button></div>
+    </div>`;
+  }
+
+  if(s.id===3){
+    const all=[...AGRO,...AGROGRP.flatMap(g=>g.items)], done=cnt(all.map(d=>d.id)), pct=Math.round(done/all.length*100);
+    return `<div class="pill">Paso 3 de 4</div><div class="card">
+      <div class="ch"><div class="sn">3</div><div class="st"><h2>${s.title}</h2><p>${s.subtitle}</p></div></div>
+      <div class="ib" style="margin-bottom:12px;">Completar solo si aplica.</div>
+      ${b}<div class="dl">${AGRO.map(drow).join('')}</div>
+      ${AGROGRP.map(g=>`<div class="sg"><div class="sl">${g.label}</div><div class="dl">${g.items.map(drow).join('')}</div></div>`).join('')}
+      <div class="pbw"><div class="pbb"><div class="pbf" style="width:${pct}%"></div></div><div class="pbl">${done} / ${all.length}</div></div>
+      <div class="nb"><button onclick="prevStep()">← Volver</button><button class="pri" onclick="nextStep()">Ver resumen →</button></div>
+    </div>`;
+  }
+
+  if(s.id===4){
+    const all=allDocs(), total=all.length, done=cnt(all.map(d=>d.id)), ok=done===total;
+    const miss=all.filter(d=>!uploads[d.id]).map(d=>d.name);
+    return `<div class="pill">Paso 4 de 4</div><div class="card">
+      <div class="ch"><div class="sn">4</div><div class="st"><h2>${s.title}</h2><p>${s.subtitle}</p></div></div>
+      <div class="sgrid">
+        <div class="sbl"><h4>Documentos subidos</h4><div class="ss">${done} <span>/ ${total}</span></div></div>
+        <div class="sbl"><h4>Estado</h4><div style="font-size:13px;font-weight:600;margin-top:5px;color:${ok?'var(--gm)':'var(--gold)'};">${ok?'✓ Listo para enviar':'⚠ Documentación incompleta'}</div></div>
+      </div>
+      ${folder.name?`<div class="sb ready" style="margin-bottom:14px;">☁️ <strong>${folder.name}</strong></div>`:''}
+      ${miss.length?`<div style="margin-bottom:14px;">
+        <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px;">Pendiente de entrega</div>
+        <div class="ml">${miss.slice(0,7).map(m=>`<div class="mi"><div class="md"></div>${m}</div>`).join('')}${miss.length>7?`<div class="mi"><div class="md" style="background:var(--muted)"></div>...y ${miss.length-7} más</div>`:''}</div>
+      </div>`:''}
+      ${ok
+        ? `<div class="cb"><h3>¡Expediente completo!</h3><p>Toda la documentación fue subida correctamente a la nube.</p></div>`
+        : `<div class="ib">El alta no puede procesarse hasta completar la documentación.</div>`}
+      <div class="nb">
+        <button onclick="prevStep()">← Volver</button>
+        ${ok?`<button class="gld" onclick="finish()">Confirmar alta ✓</button>`:''}
+      </div>
+    </div>`;
+  }
+}
+
+// ── ACCIONES ──────────────────────────────────────────────────────────────
+function handleS1(){
+  const rs   = document.getElementById('razonsocial')?.value?.trim();
+  const cuit = document.getElementById('cuit')?.value?.trim();
+  if(!rs||!cuit){ alert("Completá Razón Social y CUIT para continuar."); return; }
+  clientData.razonsocial = rs;
+  clientData.cuit = cuit;
+  // Nombre de carpeta en Supabase: "CUIT - Razon Social"
+  folder.name = `${cuit} - ${rs}`;
+  step = 1;
+  render();
+}
+
+async function doUpload(docId, input){
+  const file = input.files[0];
+  if(!file || !folder.name) return;
+  const ext  = file.name.split('.').pop().toLowerCase();
+  // Ruta en Supabase: carpeta-cliente/doc-id_nombre-archivo
+  const path = `${folder.name}/${docId}_${file.name}`;
+  docSt[docId] = 'uploading';
+  render();
+  try{
+    const res = await sbUpload(path, file);
+    uploads[docId] = { name: file.name, url: res.url, at: new Date().toLocaleString('es-AR') };
+    docSt[docId] = 'done';
+  }catch(e){
+    console.error(e);
+    docSt[docId] = 'error';
+  }
+  render();
+}
+
+function nextStep(){ if(step<STEPS.length-1){ step++; render(); window.scrollTo(0,0); } }
+function prevStep(){ if(step>0){ step--; render(); window.scrollTo(0,0); } }
+
+function finish(){
+  document.getElementById('sc').innerHTML = `
+    <div class="card" style="text-align:center;padding:44px 24px;">
+      <div style="font-size:3rem;margin-bottom:12px;">✅</div>
+      <h2 style="font-family:'DM Serif Display',serif;color:var(--green);font-size:1.5rem;margin-bottom:8px;">Alta confirmada</h2>
+      <p style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:16px;">El expediente está completo y toda la documentación fue guardada en la nube.</p>
+      <button onclick="reset()" style="margin-top:8px;">Iniciar nuevo cliente</button>
+    </div>`;
+}
+
+function reset(){
+  step=0; folder={name:null}; uploads={}; docSt={}; clientData={};
+  render();
+}
+
+function render(){ rProg(); document.getElementById('sc').innerHTML = rStep(); }
+render();
+</script>
+</body>
+</html>
