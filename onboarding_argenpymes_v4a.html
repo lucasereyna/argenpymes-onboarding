@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Argenpymes – Alta de Clientes | Sucursal Córdoba</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap');
+:root{--bg:#F2EDE4;--card:#FDFAF5;--green:#1B3A2D;--gm:#2D6A45;--gp:#EBF2EE;--gold:#B8872A;--gl:#F9EDD6;--text:#1A1A17;--muted:#706B5E;--border:#D5CCBC;--red:#C0392B;--rl:#FCEBEB;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+.hdr{background:#fff;padding:0 48px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #E8E8E8;height:70px;box-shadow:0 1px 4px rgba(0,0,0,0.06);}.hdr-right{font-size:12px;color:#1B3A6B;font-weight:600;letter-spacing:1px;text-transform:uppercase;}
+
+
+
+.badge{display:none;}
+.wrap{max-width:800px;margin:0 auto;padding:30px 20px 60px;}
+.pw{display:flex;margin-bottom:30px;}
+.ps{display:flex;flex-direction:column;align-items:center;flex:1;position:relative;}
+.ps:not(:last-child)::after{content:'';position:absolute;top:15px;left:50%;width:100%;height:1.5px;background:var(--border);z-index:0;}
+.ps.done:not(:last-child)::after{background:var(--gm);}
+.pc{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--border);background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;color:var(--muted);position:relative;z-index:1;transition:all .3s;}
+.ps.done .pc{background:var(--gm);border-color:var(--gm);color:#fff;}
+.ps.active .pc{background:var(--gold);border-color:var(--gold);color:#fff;}
+.pl{font-size:10px;color:var(--muted);margin-top:5px;text-align:center;letter-spacing:.5px;text-transform:uppercase;max-width:70px;line-height:1.3;}
+.ps.active .pl{color:var(--gold);font-weight:600;}
+.ps.done .pl{color:var(--gm);}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:26px;animation:fadeUp .3s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.ch{display:flex;align-items:flex-start;gap:14px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border);}
+.sn{width:36px;height:36px;min-width:36px;border-radius:9px;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:1.2rem;}
+.st h2{font-family:'DM Serif Display',serif;font-size:1.15rem;color:var(--green);}
+.st p{font-size:12px;color:var(--muted);margin-top:2px;}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.ff{grid-column:1/-1;}
+.fw label{display:block;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:5px;}
+.fw input{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:7px;background:#fff;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);outline:none;transition:border .2s;}
+.fw input:focus{border-color:var(--green);}
+.sb{display:flex;align-items:center;gap:8px;border-radius:8px;padding:10px 14px;font-size:12px;margin-top:12px;}
+.sb.idle{background:var(--gp);border:1px solid #B8D4BE;color:var(--gm);}
+.sb.ready{background:var(--gp);border:1px solid #639922;color:var(--gm);}
+.sb.err{background:var(--rl);border:1px solid var(--red);color:var(--red);}
+.dl{display:flex;flex-direction:column;gap:7px;}
+.dr{display:flex;align-items:center;gap:10px;padding:11px 13px;border-radius:8px;border:1px solid var(--border);background:#F8F5EF;transition:all .2s;}
+.dr.ok{border-color:#639922;background:var(--gp);}
+.dr.ul{border-color:var(--gold);background:var(--gl);}
+.dr.er{border-color:var(--red);background:var(--rl);}
+.dst{width:24px;height:24px;min-width:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);background:#fff;}
+.dst.ok{background:var(--gm);border-color:var(--gm);color:#fff;}
+.dst.ul{background:var(--gl);border-color:var(--gold);}
+.di{flex:1;min-width:0;}
+.dn{font-size:13px;color:var(--text);line-height:1.4;}
+.dsu{font-size:11px;color:var(--muted);margin-top:1px;}
+.df{font-size:11px;color:var(--gm);margin-top:2px;font-weight:500;}
+.de{font-size:11px;color:var(--red);margin-top:2px;}
+.dlink{font-size:11px;color:var(--gold);text-decoration:none;display:block;margin-top:1px;}
+input[type="file"]{display:none;}
+.sg{margin-top:12px;border-left:2px solid #A8CCAF;padding-left:12px;}
+.sl{font-size:10px;font-weight:600;color:var(--gm);text-transform:uppercase;letter-spacing:1px;margin-bottom:7px;}
+.ib{background:var(--gl);border:1px solid #DDB97A;border-radius:8px;padding:11px 14px;font-size:12px;color:#7A5A1A;line-height:1.6;margin-top:12px;}
+.pbw{display:flex;align-items:center;gap:10px;margin-top:16px;padding-top:14px;border-top:1px solid var(--border);}
+.pbb{flex:1;height:4px;background:var(--border);border-radius:10px;overflow:hidden;}
+.pbf{height:100%;background:var(--gm);border-radius:10px;transition:width .4s;}
+.pbl{font-size:12px;color:var(--muted);white-space:nowrap;}
+.nb{display:flex;gap:8px;justify-content:flex-end;margin-top:18px;}
+button{padding:10px 22px;border-radius:7px;border:1.5px solid var(--border);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;background:#fff;color:var(--text);transition:all .2s;}
+button:hover{background:var(--gp);border-color:var(--gm);color:var(--green);}
+button.pri{background:var(--green);color:#fff;border-color:var(--green);}
+button.pri:hover{background:var(--gm);}
+button.gld{background:var(--gold);color:#fff;border-color:var(--gold);}
+button:disabled{opacity:.5;cursor:not-allowed;}
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;}
+.sbl{background:#F8F5EF;border:1px solid var(--border);border-radius:8px;padding:13px 15px;}
+.sbl h4{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:5px;}
+.ss{font-family:'DM Serif Display',serif;font-size:1.7rem;color:var(--green);line-height:1;}
+.ss span{font-size:13px;color:var(--muted);font-family:'DM Sans',sans-serif;}
+.ml{display:flex;flex-direction:column;gap:5px;margin-top:10px;}
+.mi{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--muted);background:#F8F5EF;padding:7px 12px;border-radius:7px;border:1px solid var(--border);}
+.md{width:6px;height:6px;min-width:6px;border-radius:50%;background:var(--red);margin-top:4px;}
+.cb{background:var(--green);color:#fff;border-radius:10px;padding:24px;text-align:center;}
+.cb h3{font-family:'DM Serif Display',serif;font-size:1.4rem;margin-bottom:6px;}
+.cb p{font-size:13px;color:#A8CDB8;line-height:1.6;}
+.pill{display:inline-flex;background:var(--gp);color:var(--gm);font-size:10px;font-weight:600;padding:3px 10px;border-radius:20px;letter-spacing:1px;text-transform:uppercase;margin-bottom:14px;}
+.spin{width:12px;height:12px;border:2px solid rgba(0,0,0,.1);border-top-color:currentColor;border-radius:50%;animation:spin .7s linear infinite;display:inline-block;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.login-wrap{max-width:520px;margin:56px auto;}
+.login-card{background:#fff;border:1px solid #E8E8E8;border-radius:6px;padding:52px 52px;box-shadow:0 4px 32px rgba(0,0,0,0.08);}
+.login-logo{text-align:center;margin-bottom:32px;}
+.login-logo h2{font-family:'DM Sans',sans-serif;font-size:1.8rem;font-weight:600;color:#0A0A0A;letter-spacing:-0.5px;}
+.login-logo p{font-size:13px;color:#888;margin-top:6px;line-height:1.5;}
+.login-err{background:#FFF5F5;border:1px solid #FFCCCC;border-radius:4px;padding:10px 14px;font-size:12px;color:#CC0000;margin-bottom:14px;display:none;}
+.login-info{background:#F4F8F4;border:1px solid #D4E8D4;border-radius:4px;padding:10px 14px;font-size:12px;color:#2D6A45;margin-bottom:20px;line-height:1.5;}
+.user-bar{background:#F5F5F5;color:#444;padding:8px 48px;display:flex;align-items:center;justify-content:space-between;font-size:12px;border-bottom:1px solid #E8E8E8;}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <div style="display:flex;align-items:center;gap:14px;">
+    <img src="data:image/png;base64,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" alt="Allaria" style="height:36px;width:auto;">
+    <div style="width:1px;height:22px;background:#DDD;"></div>
+    <span style="font-size:13px;color:#555;font-weight:500;">Córdoba</span>
+  </div>
+  <div class="hdr-right">Financiá tu PyME</div>
+</div>
+<div id="userBar" style="display:none;background:#F5F5F5;color:#444;padding:8px 48px;align-items:center;justify-content:space-between;font-size:12px;border-bottom:1px solid #E8E8E8;">
+  <span id="userBarText"></span>
+  <button onclick="logout()" style="padding:4px 12px;font-size:11px;background:transparent;border:1px solid #CCC;color:#666;border-radius:3px;cursor:pointer;">Cerrar sesión</button>
+</div>
+<div id="appRoot"></div>
+<script>
+// ── SUPABASE SDK ──────────────────────────────────────────────────────────
+const { createClient } = supabase;
+const sb = createClient(
+  "https://elbtaxrblelrmnvdcvte.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsYnRheHJibGVscm1udmRjdnRlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1MjQ4MjMsImV4cCI6MjA5MzEwMDgyM30.fPgqizQfRwibNV7WDBoiJ3f_Ga64_CJ1NGU7BROftoo"
+);
+const BUCKET = "expedientes";
+
+// ── AUTH / PROGRESO ──────────────────────────────────────────────────────
+async function loginCliente(mail, cuit) {
+  const { data, error } = await sb
+    .from('clientes')
+    .upsert({ mail: mail.toLowerCase(), cuit }, { onConflict: 'mail,cuit' })
+    .select().single();
+  if (error) throw new Error(error.message);
+  return data;
+}
+
+async function cargarProgreso(clienteId) {
+  const { data } = await sb.from('clientes').select('datos,uploads').eq('id', clienteId).single();
+  if (data) {
+    clientData = data.datos || {};
+    uploads    = data.uploads || {};
+    if (clientData.cuit && clientData.razonsocial)
+      folder.name = `${clientData.cuit} - ${clientData.razonsocial}`;
+  }
+}
+
+async function guardarProgreso() {
+  if (!session) return;
+  document.querySelectorAll('input[id]:not([type="file"])').forEach(inp => {
+    if (inp.id && !['loginMail','loginCuit'].includes(inp.id)) clientData[inp.id] = inp.value;
+  });
+  await sb.from('clientes').update({ datos: clientData, uploads, updated_at: new Date().toISOString() }).eq('id', session.clienteId);
+  if (folder.name) {
+    try {
+      const txt = generarResumen();
+      const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
+      await sb.storage.from(BUCKET).upload(`${folder.name}/00_datos_formulario.txt`, blob, { upsert: true });
+    } catch(e) {}
+  }
+  const ind = document.getElementById('saveInd');
+  if (ind) { ind.classList.add('show'); setTimeout(()=>ind.classList.remove('show'), 2000); }
+}
+
+function scheduleSave() { clearTimeout(saveTimer); saveTimer = setTimeout(guardarProgreso, 1500); }
+
+function generarResumen() {
+  const d = clientData, now = new Date().toLocaleString('es-AR');
+  const subidos = allDocs().filter(doc=>uploads[doc.id]).map(doc=>`  ✓ ${doc.name}`).join('\n');
+  const pendientes = allDocs().filter(doc=>!uploads[doc.id]).map(doc=>`  ○ ${doc.name}`).join('\n');
+  return `ALLARIA CÓRDOBA — FICHA DE CLIENTE\nGenerado: ${now}\n${'='.repeat(50)}\n\nRazón Social: ${d.razonsocial||'—'}\nCUIT: ${d.cuit||'—'}\nActividad: ${d.actividad||'—'}\nDomicilio: ${d.domicilio||'—'}\nLocalidad: ${d.localidad||'—'}\nPartido: ${d.partido||'—'}\nTeléfono: ${d.telefono||'—'}\nEmail: ${d.email_c||'—'}\nWeb: ${d.web||'—'}\n\nDOCUMENTACIÓN\nSubidos:\n${subidos||'  (ninguno)'}\nPendientes:\n${pendientes||'  (ninguno)'}\n`;
+}
+
+async function sbUpload(path, file) {
+  const { data, error } = await sb.storage
+    .from(BUCKET)
+    .upload(path, file, { upsert: true, contentType: file.type });
+  if (error) throw new Error(error.message);
+  const { data: urlData } = sb.storage.from(BUCKET).getPublicUrl(path);
+  return { url: urlData.publicUrl };
+}
+
+// ── ESTADO ────────────────────────────────────────────────────────────────
+let step=0, folder={name:null}, uploads={}, docSt={}, clientData={};
+
+const DOCS=[
+  {id:"anexo4",name:"Anexo IV – Res. 212/2013",sub:"Completo y firmado"},
+  {id:"mipyme",name:"Certificado MiPyME vigente",link:"http://certificadopyme.produccion.gob.ar/",linkLabel:"Descargar en produccion.gob.ar"},
+  {id:"estatuto",name:"Estatuto de la sociedad"},
+  {id:"acta",name:"Acta de directorio con distribución de cargos",sub:"Última acta"},
+  {id:"ddjj_bp",name:"DDJJ Bienes Personales de socios",sub:"Con presentación y apertura, firmada por CPN. Si el CPN difiere del balance, requiere certificación del Consejo Profesional."},
+  {id:"balances",name:"Últimos 2 estados contables",sub:"Certificados por Consejo Profesional de Ciencias Económicas"},
+  {id:"dni",name:"Copia DNI de todos los socios"},
+];
+const AGRO=[{id:"form_agro",name:"Formulario Agro",sub:"Actividad agropecuaria en general"}];
+const AGROGRP=[
+  {label:"Actividad agrícola",items:[{id:"ip1",name:"IP1 de SISA"},{id:"ip2",name:"IP2 de SISA"}]},
+  {label:"Ganadería y porcinos",items:[{id:"vacunacion",name:"Último formulario de vacunación"}]},
+  {label:"Tambo",items:[{id:"siglea",name:"Certificado SIGLEA",sub:"Últimos 24 meses"}]},
+];
+const STEPS=[
+  {id:1,label:"Datos",title:"Identificación del cliente",subtitle:"Completá los datos de la empresa"},
+  {id:2,label:"Documentación",title:"Documentación obligatoria",subtitle:"Subí cada archivo — se guardan automáticamente en la nube"},
+  {id:3,label:"Agro",title:"Documentación agropecuaria",subtitle:"Solo si la empresa tiene actividad agropecuaria"},
+  {id:4,label:"Revisión",title:"Revisión y confirmación",subtitle:"Estado final del expediente"},
+];
+
+function allDocs(){return[...DOCS,...AGRO,...AGROGRP.flatMap(g=>g.items)];}
+function cnt(ids){return ids.filter(id=>uploads[id]).length;}
+
+function rProg(){
+  document.getElementById('pw').innerHTML=STEPS.map((s,i)=>{
+    let c=i<step?'done':i===step?'active':'';
+    const ic=i<step?`<svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`:s.id;
+    return `<div class="ps ${c}"><div class="pc">${ic}</div><div class="pl">${s.label}</div></div>`;
+  }).join('');
+}
+
+function saveIndHTML(){ return '<span id="saveInd" style="font-size:11px;color:var(--gm);opacity:0;transition:opacity .3s;margin-right:auto;" >✓ Guardado</span>'; }
+
+function fld(label,type,ph,id){
+  return `<div class="fw"><label>${label}</label><input type="${type}" id="${id}" placeholder="${ph}" value="${clientData[id]||''}" oninput="clientData['${id}']=this.value;scheduleSave()"></div>`;
+}
+
+function banner(){
+  if(!folder.name) return '';
+  return `<div class="sb ready" style="margin-bottom:12px;">☁️ Guardando en: <strong style="margin-left:4px;">${folder.name}</strong></div>`;
+}
+
+function drow(doc){
+  const up=uploads[doc.id],st=docSt[doc.id]||'idle';
+  const rc=up?'ok':st==='uploading'?'ul':st==='error'?'er':'';
+  const ic=up?`<div class="dst ok"><svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4L4 7.5L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>`:st==='uploading'?`<div class="dst ul"><span class="spin" style="color:var(--gold)"></span></div>`:`<div class="dst"></div>`;
+  let det='';
+  if(up) det=`<div class="df">📄 <a href="${up.url}" target="_blank" style="color:var(--gm);text-decoration:none;">${up.name}</a> · ${up.at}</div>`;
+  else if(st==='uploading') det=`<div class="dsu">Subiendo...</div>`;
+  else if(st==='error') det=`<div class="de">Error al subir. Intentá de nuevo.</div>`;
+  const canUpload=!!folder.name&&st!=='uploading';
+  return `<div class="dr ${rc}">${ic}<div class="di"><div class="dn">${doc.name}</div>${doc.sub?`<div class="dsu">${doc.sub}</div>`:''}${doc.link?`<a class="dlink" href="${doc.link}" target="_blank">↗ ${doc.linkLabel}</a>`:''} ${det}</div><div><input type="file" id="fi-${doc.id}" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" onchange="doUpload('${doc.id}',this)">${canUpload?`<button onclick="document.getElementById('fi-${doc.id}').click()" style="font-size:11px;padding:5px 12px;">${up?'Reemplazar':'↑ Subir'}</button>`:''}</div></div>`;
+}
+
+// ── LOGIN ─────────────────────────────────────────────────────────────────
+function renderLogin(err) {
+  document.getElementById('appRoot').innerHTML = `
+    <div class="login-wrap">
+      <div class="login-card">
+        <div class="login-logo">
+          <h2>Bienvenido</h2>
+          <p>Ingresá tu mail y CUIT para continuar</p>
+        </div>
+        ${err ? `<div class="login-err" style="display:block;">${err}</div>` : ''}
+        <div class="login-info">Si ya iniciaste una carga anterior, tu progreso se recuperará automáticamente.</div>
+        <div class="fw"><label>Correo electrónico</label><input type="email" id="loginMail" placeholder="empresa@mail.com" onkeydown="if(event.key==='Enter')handleLogin()"></div>
+        <div class="fw" style="margin-top:10px;"><label>CUIT</label><input type="text" id="loginCuit" placeholder="XX-XXXXXXXX-X" onkeydown="if(event.key==='Enter')handleLogin()"></div>
+        <button id="loginBtn" onclick="handleLogin()" style="width:100%;margin-top:12px;padding:13px;background:#0A0A0A;color:#fff;border:none;border-radius:4px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;">Ingresar →</button>
+      </div>
+    </div>`;
+  setTimeout(()=>document.getElementById('loginMail')?.focus(), 100);
+}
+
+async function handleLogin() {
+  const mail = document.getElementById('loginMail')?.value?.trim();
+  const cuit = document.getElementById('loginCuit')?.value?.trim().replace(/[^0-9]/g,'');
+  if (!mail || !cuit) { renderLogin("Completá mail y CUIT para continuar."); return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail)) { renderLogin("El mail no es válido."); return; }
+  if (cuit.length < 10) { renderLogin("El CUIT debe tener 11 dígitos."); return; }
+  const btn = document.getElementById('loginBtn');
+  btn.disabled = true; btn.textContent = 'Ingresando...';
+  try {
+    const cliente = await loginCliente(mail, cuit);
+    session = { mail, cuit, clienteId: cliente.id };
+    await cargarProgreso(cliente.id);
+    if (clientData.razonsocial && clientData.cuit) step = 1;
+    const ub = document.getElementById('userBar');
+    ub.style.display = 'flex';
+    document.getElementById('userBarText').textContent = `${mail} · CUIT ${cuit}`;
+    renderApp();
+  } catch(e) {
+    renderLogin("Error al ingresar. Verificá tus datos e intentá de nuevo.");
+  }
+}
+
+function logout() {
+  session=null; step=0; folder={name:null}; uploads={}; docSt={}; clientData={};
+  document.getElementById('userBar').style.display='none';
+  renderLogin();
+}
+
+function renderApp() {
+  document.getElementById('appRoot').innerHTML = `
+    <div class="wrap">
+      <div class="pw" id="pw"></div>
+      <div id="sc"></div>
+    </div>`;
+  render();
+}
+
+function rStep(){
+  const s=STEPS[step];
+  if(s.id===1) return `<div class="pill">Paso 1 de 4</div><div class="card">
+    <div class="ch"><div class="sn">1</div><div class="st"><h2>${s.title}</h2><p>${s.subtitle}</p></div></div>
+    <div class="fg">
+      ${fld("Razón social","text","Nombre de la empresa","razonsocial")}
+      ${fld("CUIT","text","XX-XXXXXXXX-X","cuit")}
+      ${fld("Actividad principal (AFIP)","text","Código y descripción","actividad")}
+      ${fld("Domicilio real","text","Calle y número","domicilio")}
+      ${fld("Localidad","text","Localidad","localidad")}
+      ${fld("Partido / Municipio","text","Partido","partido")}
+      ${fld("Teléfono","tel","(351) 000-0000","telefono")}
+      ${fld("Correo electrónico","email","empresa@mail.com","email_c")}
+      <div class="ff">${fld("Página web (opcional)","url","https://...","web")}</div>
+    </div>
+    <div class="sb idle" style="margin-top:14px;">☁️ Los archivos se guardarán en Supabase Storage organizados por cliente.</div>
+    <div class="nb"><button class="pri" onclick="handleS1()">Confirmar y continuar →</button></div>
+  </div>`;
+
+  const b=banner();
+  if(s.id===2){
+    const ids=DOCS.map(d=>d.id),done=cnt(ids),pct=Math.round(done/ids.length*100);
+    return `<div class="pill">Paso 2 de 4</div><div class="card">
+      <div class="ch"><div class="sn">2</div><div class="st"><h2>${s.title}</h2><p>${s.subtitle}</p></div></div>
+      ${b}<div class="dl">${DOCS.map(drow).join('')}</div>
+      <div class="pbw"><div class="pbb"><div class="pbf" style="width:${pct}%"></div></div><div class="pbl">${done} / ${ids.length}</div></div>
+      <div class="nb"><button onclick="prevStep()">← Volver</button><button class="pri" onclick="nextStep()">Siguiente →</button></div>
+    </div>`;
+  }
+  if(s.id===3){
+    const all=[...AGRO,...AGROGRP.flatMap(g=>g.items)],done=cnt(all.map(d=>d.id)),pct=Math.round(done/all.length*100);
+    return `<div class="pill">Paso 3 de 4</div><div class="card">
+      <div class="ch"><div class="sn">3</div><div class="st"><h2>${s.title}</h2><p>${s.subtitle}</p></div></div>
+      <div class="ib" style="margin-bottom:12px;">Completar solo si aplica.</div>
+      ${b}<div class="dl">${AGRO.map(drow).join('')}</div>
+      ${AGROGRP.map(g=>`<div class="sg"><div class="sl">${g.label}</div><div class="dl">${g.items.map(drow).join('')}</div></div>`).join('')}
+      <div class="pbw"><div class="pbb"><div class="pbf" style="width:${pct}%"></div></div><div class="pbl">${done} / ${all.length}</div></div>
+      <div class="nb"><button onclick="prevStep()">← Volver</button><button class="pri" onclick="nextStep()">Ver resumen →</button></div>
+    </div>`;
+  }
+  if(s.id===4){
+    const all=allDocs(),total=all.length,done=cnt(all.map(d=>d.id)),ok=done===total;
+    const miss=all.filter(d=>!uploads[d.id]).map(d=>d.name);
+    return `<div class="pill">Paso 4 de 4</div><div class="card">
+      <div class="ch"><div class="sn">4</div><div class="st"><h2>${s.title}</h2><p>${s.subtitle}</p></div></div>
+      <div class="sgrid">
+        <div class="sbl"><h4>Documentos subidos</h4><div class="ss">${done} <span>/ ${total}</span></div></div>
+        <div class="sbl"><h4>Estado</h4><div style="font-size:13px;font-weight:600;margin-top:5px;color:${ok?'var(--gm)':'var(--gold)'};">${ok?'✓ Listo para enviar':'⚠ Documentación incompleta'}</div></div>
+      </div>
+      ${folder.name?`<div class="sb ready" style="margin-bottom:14px;">☁️ <strong>${folder.name}</strong></div>`:''}
+      ${miss.length?`<div style="margin-bottom:14px;"><div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px;">Pendiente de entrega</div><div class="ml">${miss.slice(0,7).map(m=>`<div class="mi"><div class="md"></div>${m}</div>`).join('')}${miss.length>7?`<div class="mi"><div class="md" style="background:var(--muted)"></div>...y ${miss.length-7} más</div>`:''}</div></div>`:''}
+      ${ok?`<div class="cb"><h3>¡Expediente completo!</h3><p>Toda la documentación fue subida correctamente a la nube.</p></div>`:`<div class="ib">El alta no puede procesarse hasta completar la documentación.</div>`}
+      <div class="nb"><button onclick="prevStep()">← Volver</button>${ok?`<button class="gld" onclick="finish()">Confirmar alta ✓</button>`:''}</div>
+    </div>`;
+  }
+}
+
+function handleS1(){
+  const rs=document.getElementById('razonsocial')?.value?.trim();
+  const cuit=document.getElementById('cuit')?.value?.trim();
+  if(!rs||!cuit){alert("Completá Razón Social y CUIT.");return;}
+  clientData.razonsocial=rs; clientData.cuit=cuit;
+  folder.name=`${cuit} - ${rs}`;
+  guardarProgreso();
+  step=1; render();
+}
+
+async function doUpload(docId,input){
+  const file=input.files[0];
+  if(!file||!folder.name) return;
+  const path=`${folder.name}/${docId}_${file.name}`;
+  docSt[docId]='uploading'; render();
+  try{
+    const res=await sbUpload(path,file);
+    uploads[docId]={name:file.name,url:res.url,at:new Date().toLocaleString('es-AR')};
+    docSt[docId]='done';
+    guardarProgreso();
+  }catch(e){
+    console.error(e);
+    docSt[docId]='error';
+  }
+  render();
+}
+
+function nextStep(){guardarProgreso();if(step<STEPS.length-1){step++;render();window.scrollTo(0,0);}}
+function prevStep(){guardarProgreso();if(step>0){step--;render();window.scrollTo(0,0);}}
+
+function finish(){
+  document.getElementById('sc').innerHTML=`<div class="card" style="text-align:center;padding:44px 24px;">
+    <div style="font-size:3rem;margin-bottom:12px;">✅</div>
+    <h2 style="font-family:'DM Serif Display',serif;color:var(--green);font-size:1.5rem;margin-bottom:8px;">Alta confirmada</h2>
+    <p style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:16px;">Expediente completo guardado en la nube.</p>
+    <button onclick="reset()" style="margin-top:8px;">Iniciar nuevo cliente</button>
+  </div>`;
+}
+
+function reset(){step=0;folder={name:null};uploads={};docSt={};clientData={};render();}
+function render(){rProg();document.getElementById('sc').innerHTML=rStep();}
+renderLogin();
+</script>
+</body>
+</html>
